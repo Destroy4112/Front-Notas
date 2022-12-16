@@ -2,12 +2,25 @@ import { useEffect, useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import { actualizarDocentes, cargarDocentePorId } from "../../../Server/servidor";
+import { actualizarDocentes, cargarDocentePorId, cargarToken } from "../../../Server/servidor";
 
 
 function EditarDocente() {
 
+    let token = localStorage.getItem("token");
     const { id } = useParams();
+
+    const navigate2 = useNavigate();
+    const returnToPrincipal = () => {
+        navigate2("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+        cargarToken(token);
+    })
 
     useEffect(() => {
         const consultaDocente = async () => {
@@ -103,7 +116,7 @@ function EditarDocente() {
                                                 </Form.Group>
                                                 <Form.Group as={Col} controlId="numeroDocumento">
                                                     <Form.Label>Numero Documento</Form.Label>
-                                                    <Form.Control name="numeroDocumento" onChange={handleChange} defaultValue={docente.numeroDocumento} disabled/>
+                                                    <Form.Control name="numeroDocumento" onChange={handleChange} defaultValue={docente.numeroDocumento} disabled />
                                                 </Form.Group>
                                                 <Form.Group as={Col} controlId="sexo">
                                                     <Form.Label>Sexo</Form.Label>
@@ -123,11 +136,11 @@ function EditarDocente() {
                                             <Row className="col-md-12 mb-3">
                                                 <Form.Group as={Col} controlId="fechaNacimiento">
                                                     <Form.Label>Fecha Nacimiento</Form.Label>
-                                                    <Form.Control name="fechaNacimiento" onChange={handleChange} defaultValue={docente.fechaNacimiento} disabled/>
+                                                    <Form.Control name="fechaNacimiento" onChange={handleChange} defaultValue={docente.fechaNacimiento} disabled />
                                                 </Form.Group>
                                                 <Form.Group as={Col} controlId="edad">
                                                     <Form.Label>Edad</Form.Label>
-                                                    <Form.Control name="edad" onChange={handleChange} defaultValue={docente.edad} disabled/>
+                                                    <Form.Control name="edad" onChange={handleChange} defaultValue={docente.edad} disabled />
                                                 </Form.Group>
                                                 <Form.Group as={Col} controlId="telefono">
                                                     <Form.Label>Telefono</Form.Label>

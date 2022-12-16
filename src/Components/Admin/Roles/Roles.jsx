@@ -1,17 +1,31 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { cargarRoles, eliminarRol, guardarRol } from "../../../Server/servidor";
+import { cargarRoles, cargarToken, eliminarRol, guardarRol } from "../../../Server/servidor";
 
 function Roles() {
 
   /*====================== Agregar ==============================*/
+
+  let token = localStorage.getItem("token");
   const [listaRol, setListaRol] = useState([]);
   const [modalCrear, setModalCrear] = useState(false);
   const [rol, setRol] = useState({
     descripcionRol: ""
   });
+
+  const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+    cargarToken(token);
+  })
 
   function handleChange({ target }) {
     setRol({

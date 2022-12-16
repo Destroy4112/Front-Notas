@@ -2,6 +2,12 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 function Nav() {
+
+    function cerrarSesion(){
+        localStorage.removeItem("token");
+        
+    }
+
     return (
         <nav className="main-header navbar navbar-expand navbar-white navbar-light">
             <ul className="navbar-nav">
@@ -20,7 +26,7 @@ function Nav() {
                         <h6 className="dropdown-item">
                             <span className="right badge badge-success float-right">Admin</span>
                         </h6>
-                        <NavLink to="/" className="a dropdown-item">
+                        <NavLink onClick={()=>cerrarSesion()} className="a dropdown-item">
                             <i className="fas fa-sign-out-alt"></i>&nbsp; Salir
                         </NavLink>
                     </div>

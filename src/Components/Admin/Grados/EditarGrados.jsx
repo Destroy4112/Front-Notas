@@ -1,12 +1,26 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { cargarGradoPorId } from "../../../Server/servidor";
+import { useNavigate, useParams } from "react-router-dom";
+import { cargarGradoPorId, cargarToken } from "../../../Server/servidor";
 
 
 function EditarGrados() {
 
+    let token = localStorage.getItem("token");
     const { id } = useParams();
     const [grado, setGrado] = useState({});
+
+    const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+        cargarToken(token);
+      })
+
     const consultaGrado = async () => {
         try {
             const data = await cargarGradoPorId(id);

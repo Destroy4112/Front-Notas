@@ -1,12 +1,25 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import { cargarGrupos } from "../../../Server/servidor";
+import { NavLink, useNavigate } from "react-router-dom";
+import { cargarGrupos, cargarToken } from "../../../Server/servidor";
 
 function Grupos() {
 
+    let token = localStorage.getItem("token");
     const [listaGrados, setListaGrados] = useState([]);
     const [busqueda, setBusqueda] = useState("");
     let contador = 0;
+
+    const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+        cargarToken(token);
+      })
 
     const getGrupos = async () => {
         try {

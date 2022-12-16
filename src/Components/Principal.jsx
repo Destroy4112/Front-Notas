@@ -1,5 +1,21 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Principal() {
+
+    let token = localStorage.getItem("token");
+
+    const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+    })
+
     return (
         <div className="content-wrapper" style={{ background: '#0d3e5c' }}>
             <div className="content-header">
@@ -63,7 +79,7 @@ function Principal() {
                         </div>
                     </div>
                     <div className="row">
-                        
+
                         <div className="col-md-12">
                             <div className="card card-primary">
                                 <div className="card-body p-0">
@@ -77,4 +93,4 @@ function Principal() {
         </div>
     )
 }
-export { Principal }
+export { Principal}

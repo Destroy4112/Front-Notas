@@ -1,12 +1,26 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { cargarCursoPorId } from "../../../Server/servidor";
+import { useNavigate, useParams } from "react-router-dom";
+import { cargarCursoPorId, cargarToken } from "../../../Server/servidor";
 
 
 function EditarCurso() {
 
+    let token = localStorage.getItem("token");
     const { id } = useParams();
     const [curso, setCurso] = useState({});
+
+    const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+        cargarToken(token);
+    })
+
     const consultaCurso = async () => {
         try {
             const data = await cargarCursoPorId(id);

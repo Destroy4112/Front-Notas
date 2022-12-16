@@ -1,10 +1,24 @@
 import { useEffect, useState } from "react";
-import { cargarUsuarios } from "../../../Server/servidor";
+import { useNavigate } from "react-router-dom";
+import { cargarToken, cargarUsuarios } from "../../../Server/servidor";
 
 function Usuarios() {
+  let token = localStorage.getItem("token");
   const [listaUsuario, setListaUsuario] = useState([]);
   const [busqueda, setBusqueda] = useState("");
   let contador = 0;
+
+  const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+    cargarToken(token);
+  })
 
   const getUsuario = async () => {
     try {

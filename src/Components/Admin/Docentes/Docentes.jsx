@@ -1,15 +1,19 @@
 import { useEffect } from "react";
 import { useState } from "react"
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { agregarDocentes, cargarDocentes, eliminarDocente } from "../../../Server/servidor";
+import { agregarDocentes, cargarDocentes, cargarRolPorDescripcion, cargarToken, eliminarDocente } from "../../../Server/servidor";
 
 function Docentes() {
 
     /*====================== Agregar ==============================*/
 
+    let resultado = [];
+    let token = localStorage.getItem("token");
+    const [listaDocentes, setListaDocentes] = useState([]);
     const [modalCrear, setModalCrear] = useState(false);
+    const [rol, setRol] = useState("");
     const [docente, setDocente] = useState({
         nombres: "",
         apellidos: "",
@@ -20,7 +24,7 @@ function Docentes() {
         fechaNacimiento: "",
         telefono: "",
         edad: 0,
-        idRol: "63925277d619547c9a48d527"
+        idRol: "6392526dd619547c9a48d526"
     });
 
     useEffect(() => {
@@ -34,7 +38,17 @@ function Docentes() {
         });
     }
 
+    const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
 
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+        cargarToken(token);
+    })
     async function handleSubmit(e) {
         e.preventDefault();
 
@@ -61,8 +75,8 @@ function Docentes() {
             showConfirmButton: false,
             timer: 1700
         })
-       // let datos = await getDocentes();
-        //setListaDocentes(datos);
+        let datos = await getDocentes();
+        resultado = datos;
     }
 
     const abrirModal = () => {
@@ -77,8 +91,6 @@ function Docentes() {
     }
 
     /*====================== Mostrar ==============================*/
-
-    const [listaDocentes, setListaDocentes] = useState([]);
 
     const getDocentes = async () => {
         try {
@@ -101,8 +113,6 @@ function Docentes() {
     const buscador = (e) => {
         setBusqueda(e.target.value);
     }
-
-    let resultado = [];
 
     if (!busqueda) {
         resultado = listaDocentes;
@@ -141,6 +151,17 @@ function Docentes() {
 
     }
 
+    //=======================================================================
+
+    const buscarRol = async () => {
+        const resRol = await cargarRolPorDescripcion('Docente');
+        setRol(resRol.id);
+        console.log("rol" + rol);
+    }
+
+    useEffect(() => {
+        buscarRol();
+    })
 
     return (
         <>
@@ -183,7 +204,11 @@ function Docentes() {
                                                             </ul>
                                                         </div>
                                                         <div className="col-5 text-center h-25">
-                                                            <img src={require('../../../Assets/images/avatar4.png')} alt="user-avatar" className="img-circle img-fluid" />
+                                                            {item.sexo === 'Masculino' ?
+                                                                <img src={require('../../../Assets/images/avatar4.png')} alt="user-avatar" className="img-circle img-fluid" />
+                                                                :
+                                                                <img src={require('../../../Assets/images/avatar2.png')} alt="user-avatar" className="img-circle img-fluid" />
+                                                            }
                                                             <ul className="ml-4 mb-0 fa-ul text-muted">
                                                                 <li className="small"><span className="fa-li"><i className="fas fa-map-marker-alt"></i></span> &nbsp;Edad: <br /> {item.edad}</li>
                                                                 <li className="small"><span className="fa-li"><i className="fas fa-venus-mars"></i></span> &nbsp;Genero: <br /> {item.sexo}</li>
@@ -211,6 +236,9 @@ function Docentes() {
                         <Modal.Title>Crear Docente</Modal.Title>
                     </Modal.Header>
                     <Modal.Body className="col-12">
+                        <Form.Group as={Col} controlId="idRol">
+                            <Form.Control name="idRol" value={rol} onChange={handleChange} disabled />
+                        </Form.Group>
                         <Row className="mb-3">
                             <Form.Group as={Col} controlId="nombres">
                                 <Form.Label>Nombres</Form.Label>

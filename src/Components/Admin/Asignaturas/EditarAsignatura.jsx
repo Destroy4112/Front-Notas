@@ -1,19 +1,33 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { cargarAsignaturaPorId } from "../../../Server/servidor";
+import { useNavigate, useParams } from "react-router-dom";
+import { cargarAsignaturaPorId, cargarToken } from "../../../Server/servidor";
 
 
 function EditarAsignatura() {
 
+    let token = localStorage.getItem("token");
     const { id } = useParams();
     const [asignatura, setAsignatura] = useState({});
 
     useEffect(() => {
         const consultaAsignatura = async () => {
             const data = await cargarAsignaturaPorId(id);
-            setAsignatura(data);        }
+            setAsignatura(data);
+        }
         consultaAsignatura();
-    },[id])
+    }, [id])
+
+    const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+        cargarToken(token);
+    })
 
     return (
         <>

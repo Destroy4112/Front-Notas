@@ -1,12 +1,24 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import { cargarAsignaturas } from "../../../Server/servidor";
+import { NavLink, useNavigate } from "react-router-dom";
+import { cargarAsignaturas, cargarToken } from "../../../Server/servidor";
 
 function Asignaturas() {
-
+    let token = localStorage.getItem("token");
     const [listaAsignaturas, setlistaAsignaturas] = useState([]);
     const [busqueda, setBusqueda] = useState("");
     let contador = 0;
+
+    const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+        cargarToken(token);
+    })
 
     const listarAsignaturas = async () => {
         try {

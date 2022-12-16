@@ -1,12 +1,26 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { cargarGrupoPorId } from "../../../Server/servidor";
+import { useNavigate, useParams } from "react-router-dom";
+import { cargarGrupoPorId, cargarToken } from "../../../Server/servidor";
 
 
 function EditarGrupo() {
 
+    let token = localStorage.getItem("token");
     const { id } = useParams();
     const [grupo, setGrupo] = useState({});
+
+    const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+        cargarToken(token);
+    })
+
     const consultaGrupo = async () => {
         try {
             const data = await cargarGrupoPorId(id);

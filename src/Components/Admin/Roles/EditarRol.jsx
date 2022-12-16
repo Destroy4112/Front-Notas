@@ -1,16 +1,29 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import { actualizarRol, cargarRolPorId } from "../../../Server/servidor";
+import { actualizarRol, cargarRolPorId, cargarToken } from "../../../Server/servidor";
 
 
 function EditarRol() {
 
+    let token = localStorage.getItem("token");
     const { id } = useParams();
     const [rol, setRol] = useState({
         id: "",
         descripcionRol: ""
     });
+
+    const navigate2 = useNavigate();
+    const returnToPrincipal = () => {
+        navigate2("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+        cargarToken(token);
+    })
 
     useEffect(() => {
         const consultaRol = async () => {
@@ -77,7 +90,7 @@ function EditarRol() {
                                             </div>
                                             <div className="form-group col-md-8">
                                                 <button type="submit" className="btn btn-success" onClick={() => returnToRoles()}>Regresar</button>
-                                                <button type="submit" className="btn btn-success" style={{float:'right'}}>Actualizar</button>
+                                                <button type="submit" className="btn btn-success" style={{ float: 'right' }}>Actualizar</button>
                                             </div>
                                         </form>
 

@@ -1,12 +1,25 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import { cargarCursos } from "../../../Server/servidor"
+import { NavLink, useNavigate } from "react-router-dom";
+import { cargarCursos, cargarToken } from "../../../Server/servidor"
 
 function Cursos() {
 
+    let token = localStorage.getItem("token");
     const [listaCursos, setListaCursos] = useState([]);
     const [busqueda, setBusqueda] = useState("");
     let contador = 0;
+
+    const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+        cargarToken(token);
+    })
 
     const consultarCursos = async () => {
         try {
@@ -77,9 +90,9 @@ function Cursos() {
                                                             <td>{curso.idGrupo}</td>
                                                             <td>{curso.idYear}</td>
                                                             <td>
-                                                            <NavLink to={`/admin/curso/${curso.idCurso}`} className="btn btn-primary" style={{ height: 35, width: 50, borderTopLeftRadius: 50, borderTopRightRadius: 0, borderBottomRightRadius: 0 }}><i className="fas fa-user-edit"></i></NavLink>
-                                                            <NavLink className="btn btn-danger" style={{ height: 35, width: 50, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}><i className="fas fa-trash-alt"></i></NavLink>
-                                                        </td>
+                                                                <NavLink to={`/admin/curso/${curso.idCurso}`} className="btn btn-primary" style={{ height: 35, width: 50, borderTopLeftRadius: 50, borderTopRightRadius: 0, borderBottomRightRadius: 0 }}><i className="fas fa-user-edit"></i></NavLink>
+                                                                <NavLink className="btn btn-danger" style={{ height: 35, width: 50, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}><i className="fas fa-trash-alt"></i></NavLink>
+                                                            </td>
                                                         </tr>
                                                     ))
                                                 }

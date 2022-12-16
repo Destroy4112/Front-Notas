@@ -1,16 +1,31 @@
 import { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { cargarYears, eliminarYear, guardarYear } from "../../../Server/servidor";
+import { cargarToken, cargarYears, eliminarYear, guardarYear } from "../../../Server/servidor";
 
 function Years() {
 
   /*======= Agregar ========================================================*/
+
+  let token = localStorage.getItem("token");
   const [modalCrear, setModalCrear] = useState(false);
   const [year, setYear] = useState({
     descripcionYear: "",
     curso: ""
   });
+
+  const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+    cargarToken(token);
+  })
 
   function handleChange({ target }) {
     setYear({
@@ -86,7 +101,7 @@ function Years() {
     setModalEditar(false);
   }
 
-  async function handleSubmitEditar (e){
+  async function handleSubmitEditar(e) {
     e.preventDefault();
     console.log("estas editando")
   }

@@ -1,11 +1,25 @@
 import { useEffect, useState } from "react";
-import { cargarEstudiantes } from "../../../Server/servidor";
+import { useNavigate } from "react-router-dom";
+import { cargarEstudiantes, cargarToken } from "../../../Server/servidor";
 
 function Estudiantes() {
 
+    let token = localStorage.getItem("token");
     const [listaEstudiantes, setListaEstudiantes] = useState([]);
     const [busqueda, setBusqueda] = useState("");
     let contador = 0;
+
+    const navigate = useNavigate();
+    const returnToPrincipal = () => {
+        navigate("/");
+    }
+
+    useEffect(() => {
+        if (!token) {
+            returnToPrincipal();
+        }
+        cargarToken(token);
+    })
 
     const getEstudiantes = async () => {
         try {
@@ -31,9 +45,9 @@ function Estudiantes() {
         resultado = listaEstudiantes;
     } else {
         resultado = listaEstudiantes.filter((dato) =>
-        dato.nombres.toLowerCase().includes(busqueda.toLowerCase()) ||
-        dato.apellidos.toLowerCase().includes(busqueda.toLowerCase()) || 
-        dato.numeroDocumento.toLowerCase().includes(busqueda.toLowerCase()))
+            dato.nombres.toLowerCase().includes(busqueda.toLowerCase()) ||
+            dato.apellidos.toLowerCase().includes(busqueda.toLowerCase()) ||
+            dato.numeroDocumento.toLowerCase().includes(busqueda.toLowerCase()))
     }
 
     return (
@@ -74,19 +88,19 @@ function Estudiantes() {
                                                 {
                                                     resultado.length > 0 ?
 
-                                                    resultado.map((estudiante) => (
-                                                        <tr key={estudiante.id}>
-                                                            <td>{contador += 1}</td>
-                                                            <td>{estudiante.nombres + " " + estudiante.apellidos}</td>
-                                                            <td>{estudiante.tipoDocumento + ". " + estudiante.numeroDocumento}</td>
-                                                            <td>{estudiante.fechaNacimiento.substr(0, 10)}</td>
-                                                            <td>{estudiante.edad}</td>
-                                                            <td>{estudiante.sexo}</td>
-                                                            <td>{estudiante.idAcudiente}</td>
-                                                        </tr>
-                                                    )) : <tr>
+                                                        resultado.map((estudiante) => (
+                                                            <tr key={estudiante.id}>
+                                                                <td>{contador += 1}</td>
+                                                                <td>{estudiante.nombres + " " + estudiante.apellidos}</td>
+                                                                <td>{estudiante.tipoDocumento + ". " + estudiante.numeroDocumento}</td>
+                                                                <td>{estudiante.fechaNacimiento.substr(0, 10)}</td>
+                                                                <td>{estudiante.edad}</td>
+                                                                <td>{estudiante.sexo}</td>
+                                                                <td>{estudiante.idAcudiente}</td>
+                                                            </tr>
+                                                        )) : <tr>
                                                             <td colSpan={6} className="text-center">No existe ningun registro</td>
-                                                    </tr>
+                                                        </tr>
                                                 }
                                             </tbody>
                                         </table>
